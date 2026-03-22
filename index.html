@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡密管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #3498db;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1.2rem;
+        }
+        
+        .panel {
+            background: rgba(30, 30, 46, 0.9);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2c3e50;
+        }
+        
+        .panel h2 {
+            color: #2ecc71;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #34495e;
+            font-size: 1.8rem;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+        }
+        
+        .side-content {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ecf0f1;
+            font-weight: 600;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #34495e;
+            background: rgba(44, 62, 80, 0.7);
+            color: #ecf0f1;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #2980b9, #1f639b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .danger-btn {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+        
+        .danger-btn:hover {
+            background: linear-gradient(90deg, #c0392b, #a93226);
+        }
+        
+        .success-btn {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+        
+        .success-btn:hover {
+            background: linear-gradient(90deg, #27ae60, #219653);
+        }
+        
+        .result-box {
+            background: rgba(25, 25, 35, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .card {
+            background: rgba(44, 62, 80, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #3498db;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .card-title {
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .card-value {
+            color: #2ecc71;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        th {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(30, 30, 46, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .login-title {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 25px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: #2ecc71;
+        }
+        
+        .status-inactive {
+            background-color: #e74c3c;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .notification.success {
+            background-color: #27ae60;
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .notification.error {
+            background-color: #c0392b;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #34495e;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: auto;
+            padding: 8px 15px;
+            background: #e74c3c;
+        }
+        
+        .time-display {
+            text-align: center;
+            color: #f1c40f;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid #3498db;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="loginSection" class="login-form">
+        <h2 class="login-title">管理员登录</h2>
+        <div class="form-group">
+            <label for="adminUsername">管理员账号</label>
+            <input type="text" id="adminUsername" placeholder="请输入管理员账号">
+        </div>
+        <div class="form-group">
+            <label for="adminPassword">管理员密码</label>
+            <input type="password" id="adminPassword" placeholder="请输入管理员密码">
+        </div>
+        <button id="loginBtn" class="success-btn">登录管理系统</button>
+        <p style="text-align: center; margin-top: 20px; color: #bdc3c7; font-size: 0.9rem;">
+            默认管理员账号: JUFE 密码: 258369
+        </p>
+    </div>
+    
+    <!-- 主界面（登录后显示） -->
+    <div id="mainSection" class="container hidden">
+        <header>
+            <h1>卡密管理系统</h1>
+            <p class="subtitle">卡密生成 | 机器码管理 | 用户查询 | 系统配置</p>
+            <div class="time-display" id="currentTime">系统时间：2026-03-22 00:00:00</div>
+            <button id="logoutBtn" class="logout-btn danger-btn">退出登录</button>
+        </header>
+        
+        <div class="tab-container">
+            <div class="tab active" data-tab="generate">卡密生成</div>
+            <div class="tab" data-tab="manage">卡密管理</div>
+            <div class="tab" data-tab="machine">机器码管理</div>
+            <div class="tab" data-tab="user">用户查询</div>
+            <div class="tab" data-tab="config">系统配置</div>
+        </div>
+        
+        <!-- 卡密生成选项卡 -->
+        <div class="tab-content active" id="generate-tab">
+            <div class="flex-container">
+                <div class="main-content">
+                    <div class="panel">
+                        <h2>生成卡密</h2>
+                        <div class="form-group">
+                            <label for="cardType">选择卡密类型</label>
+                            <select id="cardType">
+                                <option value="1">一天卡密</option>
+                                <option value="3">三天卡密</option>
+                                <option value="7">七天卡密</option>
+                                <option value="30">30天卡密</option>
+                                <option value="shared">共享卡密</option>
+                                <option value="permanent">永久卡密</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardCount">生成数量 (1-100)</label>
+                            <input type="number" id="cardCount" min="1" max="100" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardPrefix">卡密前缀 (可选)</label>
+                            <input type="text" id="cardPrefix" placeholder="例如: VIP, PRO, 留空则随机">
+                        </div>
+                        <button id="generateBtn" class="success-btn">生成卡密</button>
+                        
+                        <div class="result-box" id="generatedCards">
+                            生成的卡密将显示在这里...
+                        </div>
+                        
+                        <button id="copyCardsBtn" class="success-btn" style="margin-top: 10px;">复制所有卡密</button>
+                    </div>
+                    
+                    <div class="panel">
+                        <h2>最近生成的卡密</h2>
+                        <div id="recentCards">
+                            <p style="color: #bdc3c7; text-align: center;">暂无生成的卡密记录</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="side-content">
+                    <div class="panel">
+                        <h2>卡密类型说明</h2>
+                        <div class="card-container">
+                            <div class="card">
+                                <div class="card-title">一天卡密</div>
+                                <div class="card-value">24小时</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">三天卡密</div>
+                                <div class="card-value">72小时</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">七天卡密</div>
+                                <div class="card-value">7天</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">30天卡密</div>
+                                <div class="card-value">30天</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">共享卡密</div>
+                                <div class="card-value">多设备</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">永久卡密</div>
+                                <div class="card-value">永久有效</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <h2>系统状态</h2>
+                        <div style="margin-bottom: 15px;">
+                            <span class="status-indicator status-active"></span>
+                            <span>卡密生成: <strong>正常</strong></span>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <span class="status-indicator status-active"></span>
+                            <span>机器码记录: <strong id="machineCount">0</strong> 条</span>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <span class="status-indicator status-active"></span>
+                            <span>卡密总数: <strong id="totalCards">0</strong> 个</span>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <span class="status-indicator status-active"></span>
+                            <span>在线用户: <strong id="onlineUsers">0</strong> 人</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 卡密管理选项卡 -->
+        <div class="tab-content" id="manage-tab">
+            <div class="panel">
+                <h2>卡密管理</h2>
+                <div class="form-group">
+                    <label for="searchCard">搜索卡密</label>
+                    <input type="text" id="searchCard" placeholder="输入卡密或卡密前缀进行搜索">
+                </div>
+                <button id="searchCardBtn" class="success-btn">搜索卡密</button>
+                <button id="viewAllCardsBtn" style="margin-top: 10px;">查看所有卡密</button>
+                
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table id="cardTable">
+                        <thead>
+                            <tr>
+                                <th>卡密</th>
+                                <th>类型</th>
+                                <th>状态</th>
+                                <th>生成时间</th>
+                                <th>过期时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cardTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #bdc3c7;">暂无卡密数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 机器码管理选项卡 -->
+        <div class="tab-content" id="machine-tab">
+            <div class="panel">
+                <h2>机器码管理</h2>
+                <div class="form-group">
+                    <label for="machineCodeInput">机器码</label>
+                    <input type="text" id="machineCodeInput" placeholder="输入要查询或管理的机器码">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="searchMachineBtn" class="success-btn">查询机器码</button>
+                    <button id="viewAllMachineBtn">查看所有机器码</button>
+                </div>
+                
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table id="machineTable">
+                        <thead>
+                            <tr>
+                                <th>机器码</th>
+                                <th>绑定的卡密</th>
+                                <th>绑定时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="machineTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #bdc3c7;">暂无机器码数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 用户查询选项卡 -->
+        <div class="tab-content" id="user-tab">
+            <div class="flex-container">
+                <div class="main-content">
+                    <div class="panel">
+                        <h2>用户查询功能</h2>
+                        <div class="form-group">
+                            <label for="userCardQuery">卡密登录地址</label>
+                            <input type="text" id="userCardQuery" placeholder="输入卡密登录地址进行查询">
+                            <button id="queryCardBtn" class="success-btn" style="margin-top: 10px;">查询卡密时间</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="unbindQuery">解绑卡密登录地址</label>
+                            <input type="text" id="unbindQuery" placeholder="输入需要解绑的卡密">
+                            <button id="unbindCardBtn" class="danger-btn" style="margin-top: 10px;">解绑卡密</button>
+                        </div>
+                        
+                        <div class="result-box" id="queryResult">
+                            查询结果将显示在这里...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="side-content">
+                    <div class="panel">
+                        <h2>公告调用码</h2>
+                        <div class="form-group">
+                            <label>当前公告</label>
+                            <textarea id="announcementContent" rows="5" placeholder="请输入系统公告..." style="width: 100%; padding: 12px; border-radius: 6px; background: rgba(44, 62, 80, 0.7); color: #ecf0f1; border: 1px solid #34495e;">欢迎使用卡密管理系统！当前系统运行正常，祝您使用愉快！</textarea>
+                        </div>
+                        <button id="updateAnnouncementBtn" class="success-btn">更新公告</button>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>公告调用码</label>
+                            <div class="result-box" id="announcementCode">
+                                // 公告调用示例代码
+                                fetch('https://your-domain.com/announcement.php')
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        document.getElementById('announcement').innerHTML = data;
+                                    });
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统配置选项卡 -->
+        <div class="tab-content" id="config-tab">
+            <div class="panel">
+                <h2>系统配置</h2>
+                <div class="form-group">
+                    <label>管理员账号</label>
+                    <input type="text" value="JUFE" readonly style="background: rgba(0,0,0,0.3);">
+                </div>
+                <div class="form-group">
+                    <label>管理员密码</label>
+                    <input type="password" value="258369" readonly style="background: rgba(0,0,0,0.3);">
+                </div>
+                
+                <h3 style="margin-top: 30px; color: #3498db;">系统接口地址</h3>
+                <div class="form-group">
+                    <label>卡密登录地址</label>
+                    <input type="text" id="loginApi" value="https://your-domain.com/api/login.php" style="font-family: monospace;">
+                </div>
+                <div class="form-group">
+                    <label>解绑卡密地址</label>
+                    <input type="text" id="unbindApi" value="https://your-domain.com/api/unbind.php" style="font-family: monospace;">
+                </div>
+                <div class="form-group">
+                    <label>查询时间地址</label>
+                    <input type="text" id="queryApi" value="https://your-domain.com/api/query.php" style="font-family: monospace;">
+                </div>
+                <button id="saveConfigBtn" class="success-btn">保存配置</button>
+                
+                <h3 style="margin-top: 30px; color: #3498db;">数据管理</h3>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="exportDataBtn" class="success-btn">导出数据</button>
+                    <button id="importDataBtn">导入数据</button>
+                    <button id="clearDataBtn" class="danger-btn">清空所有数据</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>卡密管理系统 &copy; 2026 丙午马年 新春版 | 当前时间: <span id="footerTime">2026-03-22</span></p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">祝您马年大吉，万事如意！</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 系统数据存储
+        let cardData = JSON.parse(localStorage.getItem('cardData')) || [];
+        let machineData = JSON.parse(localStorage.getItem('machineData')) || [];
+        let announcement = localStorage.getItem('announcement') || "欢迎使用卡密管理系统！当前系统运行正常，祝您使用愉快！";
+        
+        // DOM元素
+        const loginSection = document.getElementById('loginSection');
+        const mainSection = document.getElementById('mainSection');
+        const adminUsername = document.getElementById('adminUsername');
+        const adminPassword = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const currentTime = document.getElementById('currentTime');
+        const footerTime = document.getElementById('footerTime');
+        
+        // 卡密生成相关
+        const generateBtn = document.getElementById('generateBtn');
+        const cardType = document.getElementById('cardType');
+        const cardCount = document.getElementById('cardCount');
+        const cardPrefix = document.getElementById('cardPrefix');
+        const generatedCards = document.getElementById('generatedCards');
+        const copyCardsBtn = document.getElementById('copyCardsBtn');
+        const recentCards = document.getElementById('recentCards');
+        
+        // 系统状态显示
+        const machineCount = document.getElementById('machineCount');
+        const totalCards = document.getElementById('totalCards');
+        const onlineUsers = document.getElementById('onlineUsers');
+        
+        // 卡密管理相关
+        const searchCard = document.getElementById('searchCard');
+        const searchCardBtn = document.getElementById('searchCardBtn');
+        const viewAllCardsBtn = document.getElementById('viewAllCardsBtn');
+        const cardTableBody = document.getElementById('cardTableBody');
+        
+        // 机器码管理相关
+        const machineCodeInput = document.getElementById('machineCodeInput');
+        const searchMachineBtn = document.getElementById('searchMachineBtn');
+        const viewAllMachineBtn = document.getElementById('viewAllMachineBtn');
+        const machineTableBody = document.getElementById('machineTableBody');
+        
+        // 用户查询相关
+        const userCardQuery = document.getElementById('userCardQuery');
+        const queryCardBtn = document.getElementById('queryCardBtn');
+        const unbindQuery = document.getElementById('unbindQuery');
+        const unbindCardBtn = document.getElementById('unbindCardBtn');
+        const queryResult = document.getElementById('queryResult');
+        
+        // 公告相关
+        const announcementContent = document.getElementById('announcementContent');
+        const updateAnnouncementBtn = document.getElementById('updateAnnouncementBtn');
+        const announcementCode = document.getElementById('announcementCode');
+        
+        // 配置相关
+        const loginApi = document.getElementById('loginApi');
+        const unbindApi = document.getElementById('unbindApi');
+        const queryApi = document.getElementById('queryApi');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+        const exportDataBtn = document.getElementById('exportDataBtn');
+        const importDataBtn = document.getElementById('importDataBtn');
+        const clearDataBtn = document.getElementById('clearDataBtn');
+        
+        // 标签页切换
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // 检查是否已登录
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                showMainSection();
+            }
+            
+            // 更新系统状态
+            updateSystemStatus();
+            updateRecentCards();
+            loadAnnouncement();
+            
+            // 设置公告调用码
+            updateAnnouncementCode();
+        });
+        
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+            const timeStr = now.toLocaleTimeString('zh-CN');
+            const fullStr = `系统时间：${dateStr} ${timeStr}`;
+            
+            currentTime.textContent = fullStr;
+            footerTime.textContent = `${dateStr} ${timeStr}`;
+        }
+        
+        // 登录功能
+        loginBtn.addEventListener('click', function() {
+            const username = adminUsername.value.trim();
+            const password = adminPassword.value.trim();
+            
+            if(username === 'JUFE' && password === '258369') {
+                localStorage.setItem('isLoggedIn', 'true');
+                showMainSection();
+                showNotification('登录成功！', 'success');
+            } else {
+                showNotification('账号或密码错误！', 'error');
+            }
+        });
+        
+        // 登出功能
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('isLoggedIn');
+            showLoginSection();
+            showNotification('已退出登录', 'success');
+        });
+        
+        // 显示主界面
+        function showMainSection() {
+            loginSection.classList.add('hidden');
+            mainSection.classList.remove('hidden');
+        }
+        
+        // 显示登录界面
+        function showLoginSection() {
+            loginSection.classList.remove('hidden');
+            mainSection.classList.add('hidden');
+            adminUsername.value = '';
+            adminPassword.value = '';
+        }
+        
+        // 标签页切换
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // 移除所有active类
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // 添加active类到当前标签
+                this.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // 生成卡密
+        generateBtn.addEventListener('click', function() {
+            const typeValue = cardType.value;
+            const count = parseInt(cardCount.value) || 1;
+            const prefix = cardPrefix.value.trim();
+            
+            if(count < 1 || count > 100) {
+                showNotification('生成数量必须在1-100之间', 'error');
+                return;
+            }
+            
+            const cards = [];
+            const typeMap = {
+                '1': '一天卡密',
+                '3': '三天卡密',
+                '7': '七天卡密',
+                '30': '30天卡密',
+                'shared': '共享卡密',
+                'permanent': '永久卡密'
+            };
+            
+            const typeText = typeMap[typeValue];
+            
+            for(let i = 0; i < count; i++) {
+                const card = generateCardCode(prefix);
+                const now = new Date();
+                const generateTime = now.toLocaleString('zh-CN');
+                
+                // 计算过期时间
+                let expireTime = '永久有效';
+                if(typeValue !== 'permanent' && typeValue !== 'shared') {
+                    const days = parseInt(typeValue);
+                    const expireDate = new Date(now);
+                    expireDate.setDate(now.getDate() + days);
+                    expireTime = expireDate.toLocaleDateString('zh-CN');
+                } else if(typeValue === 'shared') {
+                    expireTime = '共享卡密(多设备)';
+                }
+                
+                const cardInfo = {
+                    code: card,
+                    type: typeText,
+                    status: '未使用',
+                    generateTime: generateTime,
+                    expireTime: expireTime,
+                    usedBy: null,
+                    usedTime: null
+                };
+                
+                cards.push(cardInfo);
+                cardData.push(cardInfo);
+            }
+            
+            // 保存到本地存储
+            localStorage.setItem('cardData', JSON.stringify(cardData));
+            
+            // 显示生成的卡密
+            let cardsHTML = '';
+            cards.forEach(cardInfo => {
+                cardsHTML += `<div style="margin-bottom: 8px; padding: 5px; background: rgba(0,0,0,0.2); border-radius: 4px;">
+                    <strong>${cardInfo.code}</strong> - ${cardInfo.type} (${cardInfo.expireTime})
+                </div>`;
+            });
+            
+            generatedCards.innerHTML = cardsHTML;
+            
+            // 更新系统状态
+            updateSystemStatus();
+            updateRecentCards();
+            
+            showNotification(`成功生成 ${count} 个卡密`, 'success');
+        });
+        
+        // 生成卡密代码
+        function generateCardCode(prefix = '') {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 去掉了容易混淆的字符
+            let result = prefix ? prefix + '-' : '';
+            
+            for(let i = 0; i < 12; i++) {
+                if(i > 0 && i % 4 === 0) result += '-';
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            return result;
+        }
+        
+        // 复制卡密
+        copyCardsBtn.addEventListener('click', function() {
+            const cardsText = generatedCards.textContent;
+            if(cardsText && cardsText !== '生成的卡密将显示在这里...') {
+                navigator.clipboard.writeText(cardsText)
+                    .then(() => showNotification('卡密已复制到剪贴板', 'success'))
+                    .catch(() => showNotification('复制失败，请手动复制', 'error'));
+            } else {
+                showNotification('没有可复制的卡密', 'error');
+            }
+        });
+        
+        // 更新系统状态
+        function updateSystemStatus() {
+            machineCount.textContent = machineData.length;
+            totalCards.textContent = cardData.length;
+            
+            // 模拟在线用户数
+            const online = Math.floor(Math.random() * 50) + 10;
+            onlineUsers.textContent = online;
+        }
+        
+        // 更新最近生成的卡密
+        function updateRecentCards() {
+            if(cardData.length === 0) {
+                recentCards.innerHTML = '<p style="color: #bdc3c7; text-align: center;">暂无生成的卡密记录</p>';
+                return;
+            }
+            
+            let html = '';
+            const recent = cardData.slice(-5).reverse(); // 显示最近5个
+            
+            recent.forEach(card => {
+                html += `<div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 
